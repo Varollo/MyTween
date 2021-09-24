@@ -5,17 +5,20 @@ using UnityEngine;
 
 namespace Varollo.MyTween
 {
+    /// <summary>
+    /// Tween effect for Quaternions
+    /// </summary>
     public class MyTweenQuaternionEffect : IMyTweenEffect<Quaternion>
     {
-        private Quaternion result;
-        private bool locked;
-        private Queue<IMyTweenEffect<Quaternion>.EffectParameters> effectQueue = new Queue<IMyTweenEffect<Quaternion>.EffectParameters>();
+        private Quaternion _resultValue;
+        private bool _isTweening;
+        private Queue<IMyTweenEffect<Quaternion>.EffectParameters> _effectQueue = new Queue<IMyTweenEffect<Quaternion>.EffectParameters>();
 
-        public bool IsLocked => locked;
+        public bool IsTweening => _isTweening;
 
-        public Quaternion ResultValue => result;
+        public Quaternion ResultValue => _resultValue;
 
-        public Queue<IMyTweenEffect<Quaternion>.EffectParameters> EffectQueue => effectQueue;
+        public Queue<IMyTweenEffect<Quaternion>.EffectParameters> EffectQueue => _effectQueue;
 
         public Quaternion ChangeInValue(Quaternion startValue, Quaternion targetValue) => targetValue * Quaternion.Inverse(startValue);
 
@@ -23,7 +26,7 @@ namespace Varollo.MyTween
 
         public IEnumerator ExecuteEffect(Quaternion startValue, Quaternion targetValue, float duration, TweeningFunctions.TweenType tweenType = TweeningFunctions.TweenType.QuadraticInOut, Action onFinishTweeningCallback = null)
         {
-            if (IsLocked)
+            if (IsTweening)
             {
                 EffectQueue.Enqueue(new IMyTweenEffect<Quaternion>.EffectParameters
                 {
@@ -36,7 +39,7 @@ namespace Varollo.MyTween
                 yield break;
             }
 
-            locked = true;
+            _isTweening = true;
 
             var startTime = Time.time;
 
@@ -50,21 +53,21 @@ namespace Varollo.MyTween
                 euler.y = TweeningFunctions.Tween(ElapsedTime(startTime), startEuler.y, change.y, duration, tweenType);
                 euler.z = TweeningFunctions.Tween(ElapsedTime(startTime), startEuler.z, change.z, duration, tweenType);
 
-                result = Quaternion.Euler(euler);
+                _resultValue = Quaternion.Euler(euler);
 
                 yield return new WaitForSeconds(Time.deltaTime);
             }
 
-            result = targetValue;
+            _resultValue = targetValue;
 
-            locked = false;
+            _isTweening = false;
 
             onFinishTweeningCallback?.Invoke();
 
-            if (effectQueue.Count > 0)
+            if (_effectQueue.Count > 0)
             {
                 var nextEffect = EffectQueue.Dequeue();
-                yield return ExecuteEffect(result, nextEffect.TargetValue, nextEffect.Duration, nextEffect.TweenType, nextEffect.OnFinishTweeningCallback);
+                yield return ExecuteEffect(_resultValue, nextEffect.TargetValue, nextEffect.Duration, nextEffect.TweenType, nextEffect.OnFinishTweeningCallback);
             }
         }
     }

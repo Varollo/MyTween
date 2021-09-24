@@ -5,17 +5,20 @@ using UnityEngine;
 
 namespace Varollo.MyTween
 {
+    /// <summary>
+    /// Tween effect for a float type
+    /// </summary>
     public class MyTweenFloatEffect : IMyTweenEffect<float>
     {
-        private float result;
-        private bool locked;
-        private Queue<IMyTweenEffect<float>.EffectParameters> effectQueue = new Queue<IMyTweenEffect<float>.EffectParameters>();
+        private float _resultValue;
+        private bool _isTweening;
+        private Queue<IMyTweenEffect<float>.EffectParameters> _effectQueue = new Queue<IMyTweenEffect<float>.EffectParameters>();
 
-        public bool IsLocked => locked;
+        public bool IsTweening => _isTweening;
 
-        public float ResultValue => result;
+        public float ResultValue => _resultValue;
 
-        public Queue<IMyTweenEffect<float>.EffectParameters> EffectQueue => effectQueue;
+        public Queue<IMyTweenEffect<float>.EffectParameters> EffectQueue => _effectQueue;
 
         public float ChangeInValue(float startValue, float targetValue) => targetValue - startValue;
 
@@ -23,7 +26,7 @@ namespace Varollo.MyTween
 
         public IEnumerator ExecuteEffect(float startValue, float targetValue, float duration, TweeningFunctions.TweenType tweenType = TweeningFunctions.TweenType.QuadraticInOut, Action onFinishTweeningCallback = null)
         {
-            if (IsLocked)
+            if (IsTweening)
             {
                 EffectQueue.Enqueue(new IMyTweenEffect<float>.EffectParameters
                 {
@@ -36,27 +39,27 @@ namespace Varollo.MyTween
                 yield break;
             }
 
-            locked = true;
+            _isTweening = true;
 
             var startTime = Time.time;
 
             while (ElapsedTime(startTime) < duration)
             {
-                result = TweeningFunctions.Tween(ElapsedTime(startTime), startValue, ChangeInValue(startValue, targetValue), duration, tweenType);
+                _resultValue = TweeningFunctions.Tween(ElapsedTime(startTime), startValue, ChangeInValue(startValue, targetValue), duration, tweenType);
 
                 yield return new WaitForSeconds(Time.deltaTime);
             }
 
-            result = targetValue;
+            _resultValue = targetValue;
 
-            locked = false;
+            _isTweening = false;
 
             onFinishTweeningCallback?.Invoke();
 
-            if (effectQueue.Count > 0)
+            if (_effectQueue.Count > 0)
             {
                 var nextEffect = EffectQueue.Dequeue();
-                yield return ExecuteEffect(result, nextEffect.TargetValue, nextEffect.Duration, nextEffect.TweenType, nextEffect.OnFinishTweeningCallback);
+                yield return ExecuteEffect(_resultValue, nextEffect.TargetValue, nextEffect.Duration, nextEffect.TweenType, nextEffect.OnFinishTweeningCallback);
             }
         }
     }

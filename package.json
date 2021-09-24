@@ -1,6 +1,6 @@
 {
   "name": "com.varollo.my_tween",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "MyTween",
   "description": "A simple tweening library by Varollo.",
   "unity": "2019.1",
