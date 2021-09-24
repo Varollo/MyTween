@@ -1,0 +1,14 @@
+{
+  "name": "com.varollo.my_tween",
+  "version": "1.0.0",
+  "displayName": "MyTween",
+  "description": "A simple tweening library by Varollo.",
+  "unity": "2019.1",
+  "keywords": [],
+  "author": {
+    "name": "Gabriel Carollo (Varollo)",
+    "email": "rimoldi98@gmail.com",
+    "url": "http://varollo.github.io"
+  },
+  "type": "library"
+}
