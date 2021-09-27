@@ -11,21 +11,9 @@ namespace Varollo.MyTween
     public interface IMyTweenEffect<T>
     {
         /// <summary>
-        /// Struct containing the parameters required to do a Tween Effect
-        /// </summary>
-        struct EffectParameters
-        {
-            public T StartValue;
-            public T TargetValue;
-            public float Duration;
-            public TweeningFunctions.TweenType TweenType;
-            public Action OnFinishTweeningCallback;
-        }
-
-        /// <summary>
         /// All queued Tween Effects in this class
         /// </summary>
-        Queue<EffectParameters> EffectQueue { get; }
+        Queue<TweenEffectParameters<T>> EffectQueue { get; }
 
         /// <summary>
         /// Is tweening right now?

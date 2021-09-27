@@ -12,13 +12,13 @@ namespace Varollo.MyTween
     {
         private Quaternion _resultValue;
         private bool _isTweening;
-        private Queue<IMyTweenEffect<Quaternion>.EffectParameters> _effectQueue = new Queue<IMyTweenEffect<Quaternion>.EffectParameters>();
+        private Queue<TweenEffectParameters<Quaternion>> _effectQueue = new Queue<TweenEffectParameters<Quaternion>>();
 
         public bool IsTweening => _isTweening;
 
         public Quaternion ResultValue => _resultValue;
 
-        public Queue<IMyTweenEffect<Quaternion>.EffectParameters> EffectQueue => _effectQueue;
+        public Queue<TweenEffectParameters<Quaternion>> EffectQueue => _effectQueue;
 
         public Quaternion ChangeInValue(Quaternion startValue, Quaternion targetValue) => targetValue * Quaternion.Inverse(startValue);
 
@@ -28,7 +28,7 @@ namespace Varollo.MyTween
         {
             if (IsTweening)
             {
-                EffectQueue.Enqueue(new IMyTweenEffect<Quaternion>.EffectParameters
+                EffectQueue.Enqueue(new TweenEffectParameters<Quaternion>
                 {
                     TargetValue = targetValue,
                     Duration = duration,

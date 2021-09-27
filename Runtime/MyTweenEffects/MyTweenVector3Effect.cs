@@ -12,13 +12,13 @@ namespace Varollo.MyTween
     {
         private Vector3 _resultValue;
         private bool _isTweening;
-        private Queue<IMyTweenEffect<Vector3>.EffectParameters> _effectQueue = new Queue<IMyTweenEffect<Vector3>.EffectParameters>();
+        private Queue<TweenEffectParameters<Vector3>> _effectQueue = new Queue<TweenEffectParameters<Vector3>>();
 
         public bool IsTweening => _isTweening;
 
         public Vector3 ResultValue => _resultValue;
 
-        public Queue<IMyTweenEffect<Vector3>.EffectParameters> EffectQueue => _effectQueue;
+        public Queue<TweenEffectParameters<Vector3>> EffectQueue => _effectQueue;
 
         public Vector3 ChangeInValue(Vector3 startValue, Vector3 targetValue) => targetValue - startValue;
 
@@ -28,7 +28,7 @@ namespace Varollo.MyTween
         {
             if (IsTweening)
             {
-                EffectQueue.Enqueue(new IMyTweenEffect<Vector3>.EffectParameters
+                EffectQueue.Enqueue(new TweenEffectParameters<Vector3>
                 {
                     TargetValue = targetValue,
                     Duration = duration,
